@@ -4,7 +4,6 @@ import 'package:flutter_chat_app/features/auth/data/auth_provider.dart';
 import 'package:flutter_chat_app/features/auth/domain/auth.dart';
 import 'package:flutter_chat_app/widget/button_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constant/color.dart';
@@ -66,12 +65,14 @@ class _AuthFormState extends ConsumerState<AuthForm> {
               ),
             );
       }
-      if (context.mounted) {
-        context.go('/chats');
-      }
     } catch (e) {
-      // TODO: display error message
       debugPrint('error ${e.toString()}');
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
     }
   }
 

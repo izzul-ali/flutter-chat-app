@@ -9,7 +9,9 @@ class AuthRepository {
 
   User? get currentUser => _firebaseAuth.currentUser;
 
-  Future<AuthCredential?> signInUser(AuthModel credential) async {
+  Stream<User?> get authState => _firebaseAuth.authStateChanges();
+
+  Future<UserCredential?> signInUser(AuthModel credential) async {
     try {
       final UserCredential auth =
           await _firebaseAuth.signInWithEmailAndPassword(
@@ -17,7 +19,7 @@ class AuthRepository {
         password: credential.password,
       );
 
-      return auth.credential;
+      return auth;
     } catch (error) {
       rethrow;
     }

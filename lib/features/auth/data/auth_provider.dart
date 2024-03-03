@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/core/route/route.dart';
 import 'package:flutter_chat_app/features/auth/domain/auth.dart';
 import 'package:flutter_chat_app/features/user/data/user_provider.dart';
 import 'package:flutter_chat_app/features/user/domain/user.dart';
@@ -11,28 +10,28 @@ part 'auth_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 AuthRepository authRepository(AuthRepositoryRef ref) {
-  // refresh router to get current auth state
-  ref.listenSelf(
-    (prev, next) => {
-      debugPrint('auth state changes ${next.currentUser}'),
-      ref.read(goRouterProvider).refresh()
-    },
-  );
-
   return AuthRepository(firebaseAuth: FirebaseAuth.instance);
 }
 
-@Riverpod(keepAlive: false)
+@riverpod
 class AuthService extends _$AuthService {
   @override
   void build() {}
 
   Future<void> login(AuthModel credential) async {
     try {
-      final AuthCredential? _ =
+      final UserCredential? user =
           await ref.read(authRepositoryProvider).signInUser(credential);
 
-      // save token to secure storage
+      if (user?.user != null) {
+        await ref
+            .read(userServiceProvider.notifier)
+            .getCurrentUser(user!.user!.uid);
+
+        return;
+      }
+
+      await ref.read(authRepositoryProvider).logout();
     } catch (e) {
       rethrow;
     }
@@ -48,14 +47,22 @@ class AuthService extends _$AuthService {
         throw ErrorDescription('Failed to register');
       }
 
-      ref.read(userRepositoryProvider).addUser(
-            UserModel(
-              uid: userCredential!.uid,
-              username: credential.username,
-              email: userCredential.email!,
-              profilPic: '',
-            ),
-          );
+      final UserModel user = UserModel(
+        uid: userCredential!.uid,
+        username: credential.username,
+        email: userCredential.email!,
+        profilPic: '',
+      );
+
+      await ref.read(userServiceProvider.notifier).addUser(user);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      await ref.read(authRepositoryProvider).logout();
     } catch (e) {
       rethrow;
     }
