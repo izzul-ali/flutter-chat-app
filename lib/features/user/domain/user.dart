@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {
@@ -27,10 +25,6 @@ class UserModel extends Equatable {
         email: email ?? this.email,
         profilPic: profilPic ?? this.profilPic,
       );
-
-  factory UserModel.fromJson(String str) => UserModel.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
 
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
         uid: json["uid"],
