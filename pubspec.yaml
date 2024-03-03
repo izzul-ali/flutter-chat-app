@@ -43,6 +43,7 @@ dependencies:
   equatable: ^2.0.5
   firebase_auth: ^4.17.4
   cloud_firestore: ^4.15.4
+  timeago: ^3.6.1
 
 dev_dependencies:
   flutter_test:
