@@ -38,28 +38,34 @@ GoRouter goRouter(GoRouterRef ref) {
       return null;
     },
     refreshListenable: GoRouteRefreshStream(authProvider.authState),
+    errorBuilder: (context, state) => const NotFoundScreen(),
     initialLocation: '/chats',
     routes: [
       GoRoute(
         path: '/onboarding',
+        name: 'Onboarding',
         builder: (context, state) => const OnBoardingScreen(),
       ),
       GoRoute(
         path: '/signup',
+        name: 'Signup',
         builder: (context, state) => const SignUpScreen(),
         routes: [
           GoRoute(
             path: 'login',
+            name: 'Login',
             builder: (context, state) => const LoginScreen(),
           ),
         ],
       ),
       GoRoute(
         path: '/chats',
+        name: 'Chats',
         builder: (context, state) => const ChatsScreen(),
         routes: [
           GoRoute(
             path: 'detail',
+            name: 'Detail',
             builder: (context, state) {
               if (state.extra != null) {
                 final senderId =
@@ -68,15 +74,35 @@ GoRouter goRouter(GoRouterRef ref) {
                 final Map<String, dynamic> data =
                     state.extra as Map<String, dynamic>;
 
-                return ChatScreen(
-                  chatRoomId: data['chatRoomId'],
-                  senderId: senderId!,
-                  receiver: data['receiver'] as UserModel,
-                );
+                if (data['receiver'] != null) {
+                  return ChatScreen(
+                    chatRoomId: data['chatRoomId'],
+                    senderId: senderId!,
+                    receiver: data['receiver'] as UserModel,
+                  );
+                }
+
+                return const NotFoundScreen();
               }
 
               return const NotFoundScreen();
             },
+            // routes: [
+            //   GoRoute(
+            //     path: 'preview/:path/:receiverId/:chatRoomId',
+            //     name: 'Preview',
+            //     builder: (context, state) {
+            //       final Map<String, String> data = state.pathParameters;
+
+            //       return PreviewMediaScreen(
+            //         type: '',
+            //         path: base64Decode(data['path']!),
+            //         receiverId: data['receiverId']!,
+            //         chatRoomId: data['chatRoomId']!,
+            //       );
+            //     },
+            //   ),
+            // ],
           ),
         ],
       ),
