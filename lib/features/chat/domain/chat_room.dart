@@ -5,7 +5,7 @@ class ChatRoom {
   final List<String> members;
   final String lastMessage;
   final bool viewed;
-  final dynamic type;
+  final String type;
   final DateTime timestamp;
   final DateTime createdAt;
 

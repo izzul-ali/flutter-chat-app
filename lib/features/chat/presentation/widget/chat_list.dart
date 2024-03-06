@@ -37,10 +37,8 @@ class ChatList extends ConsumerWidget {
                     .firstWhere((element) => element != currentUserId);
 
                 return ChatListItem(
-                  chatRoomId: chatroom.chatRoomId,
                   userId: userId,
-                  message: chatroom.lastMessage,
-                  timestamp: chatroom.timestamp,
+                  chatroom: chatroom,
                 );
               }),
           _ => const Center(child: CircularProgressIndicator())
@@ -53,16 +51,12 @@ class ChatList extends ConsumerWidget {
 class ChatListItem extends ConsumerWidget {
   const ChatListItem({
     super.key,
-    required this.chatRoomId,
+    required this.chatroom,
     required this.userId,
-    required this.message,
-    required this.timestamp,
   });
 
-  final String chatRoomId;
   final String userId;
-  final String message;
-  final DateTime timestamp;
+  final ChatRoom chatroom;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -77,7 +71,7 @@ class ChatListItem extends ConsumerWidget {
         context.go(
           '/chats/detail',
           extra: {
-            'chatRoomId': chatRoomId,
+            'chatRoomId': chatroom.chatRoomId,
             'receiver': receiver,
           },
         );
@@ -94,13 +88,38 @@ class ChatListItem extends ConsumerWidget {
         fontWeight: FontWeight.w600,
         color: Colors.black,
       ),
-      subtitle: Text(
-        message,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
+      subtitle: chatroom.type == 'text'
+          ? Text(
+              chatroom.lastMessage,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            )
+          : Row(
+              children: chatroom.type == 'image'
+                  ? [
+                      const Icon(Icons.image, size: 15, color: Colors.grey),
+                      const SizedBox(width: 3),
+                      const Text(
+                        'Photo',
+                        style: TextStyle(
+                          fontSize: 13,
+                        ),
+                      )
+                    ]
+                  : [
+                      const Icon(Icons.video_camera_back_rounded,
+                          size: 15, color: Colors.grey),
+                      const SizedBox(width: 3),
+                      const Text(
+                        'Video',
+                        style: TextStyle(
+                          fontSize: 13,
+                        ),
+                      )
+                    ],
+            ),
       trailing: Text(
-        timeago.format(timestamp),
+        timeago.format(chatroom.timestamp),
       ),
     );
   }

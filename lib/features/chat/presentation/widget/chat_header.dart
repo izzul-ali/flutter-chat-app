@@ -10,6 +10,9 @@ class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      surfaceTintColor:
+          Colors.white, // disable change bg color when scrolling down
+      backgroundColor: Colors.white,
       leadingWidth: 84,
       leading: SizedBox(
         child: Row(

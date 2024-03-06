@@ -70,7 +70,7 @@ Stream<List<Message>> messagesList(
       .collection('chatrooms')
       .doc(chatroomId)
       .collection('chats')
-      .orderBy('timestamp')
+      .orderBy('timestamp', descending: false)
       .snapshots()
       .listen((event) {
     final List<Message> messages = [];

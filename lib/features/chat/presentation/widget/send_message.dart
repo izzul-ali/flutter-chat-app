@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/features/auth/data/auth_provider.dart';
 import 'package:flutter_chat_app/features/chat/data/chat_provider.dart';
+import 'package:flutter_chat_app/features/chat/presentation/controller/upload_controller.dart';
+import 'package:flutter_chat_app/features/chat/presentation/screens/preview_media_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SendMessage extends ConsumerStatefulWidget {
@@ -41,7 +43,7 @@ class _SendMessageState extends ConsumerState<SendMessage> {
         right: 5,
         top: 5,
       ),
-      decoration: BoxDecoration(color: Colors.grey[300]),
+      decoration: BoxDecoration(color: Colors.grey[200]),
       child: Row(
         children: [
           Expanded(
@@ -55,7 +57,10 @@ class _SendMessageState extends ConsumerState<SendMessage> {
                 children: [
                   IconButton(
                     onPressed: () {},
-                    icon: const Icon(Icons.attach_file),
+                    icon: const Icon(
+                      Icons.mic_none_rounded,
+                      size: 27,
+                    ),
                   ),
                   const SizedBox(width: 5),
                   Expanded(
@@ -68,16 +73,93 @@ class _SendMessageState extends ConsumerState<SendMessage> {
                     ),
                   ),
                   const SizedBox(width: 5),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.photo_camera_outlined),
+                  PopupMenuButton(
+                    offset: const Offset(0, -85),
+                    color: Colors.white,
+                    child: const Icon(
+                      Icons.camera_alt_outlined,
+                      size: 27,
+                    ),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+
+                                  final media = await UploadController
+                                      .handlePickImageOrVideo('image');
+
+                                  if (context.mounted && media != null) {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => PreviewMediaScreen(
+                                        type: 'image',
+                                        file: media,
+                                        receiverId: widget.receiverId,
+                                        chatRoomId: widget.chatRoomId ?? '',
+                                      ),
+                                    ));
+
+                                    // cause error because parent need a extra data
+                                    // context
+                                    //     .goNamed('Preview', pathParameters: {
+                                    //   'path': base64Encode(path),
+                                    //   "receiverId": widget.receiverId,
+                                    //   'chatRoomId': widget.chatRoomId ?? '',
+                                    // });
+                                  }
+                                },
+                                icon: const Icon(Icons.image, size: 30),
+                              ),
+                              IconButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+
+                                  final media = await UploadController
+                                      .handlePickImageOrVideo('video');
+
+                                  if (context.mounted && media != null) {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => PreviewMediaScreen(
+                                        type: 'video',
+                                        file: media,
+                                        receiverId: widget.receiverId,
+                                        chatRoomId: widget.chatRoomId ?? '',
+                                      ),
+                                    ));
+
+                                    // cause error because parent need a extra data
+                                    // context
+                                    //     .goNamed('Preview', pathParameters: {
+                                    //   'path': base64Encode(path),
+                                    //   "receiverId": widget.receiverId,
+                                    //   'chatRoomId': widget.chatRoomId ?? '',
+                                    // });
+                                  }
+                                },
+                                icon: const Icon(
+                                  Icons.video_camera_back_sharp,
+                                  size: 30,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ];
+                    },
                   ),
                   IconButton(
                     onPressed: () {},
-                    icon: const Icon(
-                      Icons.mic_none_rounded,
-                      size: 27,
-                    ),
+                    icon: const Icon(Icons.attach_file),
                   ),
                 ],
               ),
