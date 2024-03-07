@@ -1,8 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
-  const ChatHeader(
-      {super.key, required this.profilePic, required this.username});
+  const ChatHeader({
+    super.key,
+    required this.profilePic,
+    required this.username,
+  });
 
   final String profilePic;
   final String username;
@@ -20,9 +24,15 @@ class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
             const BackButton(),
             CircleAvatar(
               backgroundImage: profilePic != ''
-                  ? NetworkImage(profilePic)
-                  : const AssetImage('assets/images/no-profile.png')
-                      as ImageProvider,
+                  ? CachedNetworkImage(
+                      imageUrl: profilePic,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          const Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) =>
+                          const Center(child: Icon(Icons.error_outline)),
+                    ) as ImageProvider
+                  : const AssetImage('assets/images/no-profile.png'),
               backgroundColor: Colors.grey,
               radius: 18,
             ),

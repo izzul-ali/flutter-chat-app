@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/features/user/data/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,9 +38,15 @@ class ContactList extends ConsumerWidget {
                     backgroundColor: Colors.grey,
                     radius: 30,
                     backgroundImage: value[index].profilPic != ''
-                        ? NetworkImage(value[index].profilPic)
-                        : const AssetImage('assets/images/no-profile.png')
-                            as ImageProvider,
+                        ? CachedNetworkImage(
+                            imageUrl: value[index].profilPic,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) =>
+                                const Center(child: Icon(Icons.error_outline)),
+                          ) as ImageProvider
+                        : const AssetImage('assets/images/no-profile.png'),
                   ),
                   const SizedBox(height: 7),
                   Text(

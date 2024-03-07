@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/features/auth/data/auth_provider.dart';
 import 'package:flutter_chat_app/features/chat/data/chat_provider.dart';
@@ -80,8 +81,15 @@ class ChatListItem extends ConsumerWidget {
         backgroundColor: Colors.black,
         radius: 25,
         backgroundImage: receiver.profilPic != ''
-            ? NetworkImage(receiver.profilPic)
-            : const AssetImage('assets/images/no-profile.png') as ImageProvider,
+            ? CachedNetworkImage(
+                imageUrl: receiver.profilPic,
+                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) =>
+                    const Center(child: Icon(Icons.error_outline)),
+              ) as ImageProvider
+            : const AssetImage('assets/images/no-profile.png'),
       ),
       title: Text(receiver.username),
       titleTextStyle: const TextStyle(
