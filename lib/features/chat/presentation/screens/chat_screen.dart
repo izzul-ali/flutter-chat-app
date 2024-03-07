@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/features/chat/presentation/widget/chat_header.dart';
 import 'package:flutter_chat_app/features/user/domain/user.dart';
 
-import '../widget/message_list.dart';
-import '../widget/send_message.dart';
+import '../widget/message/message_list.dart';
+import '../widget/message/send_message.dart';
 
 // TODO: add send attachment
 
