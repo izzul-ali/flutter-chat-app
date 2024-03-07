@@ -27,16 +27,21 @@ class PreviewMediaScreen extends ConsumerStatefulWidget {
 class _PreviewMediaScreenState extends ConsumerState<PreviewMediaScreen> {
   late VideoPlayerController _playerController;
 
-  @override
-  void initState() {
-    super.initState();
-
+  Future<void> _init() async {
     _playerController = VideoPlayerController.file(
       widget.file,
     );
-    // _playerController.play();
 
-    // setState(() {});
+    await _playerController.initialize();
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    _init();
+
+    super.initState();
   }
 
   @override
