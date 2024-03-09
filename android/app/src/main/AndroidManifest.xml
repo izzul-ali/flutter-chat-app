@@ -16,7 +16,7 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <application
-        android:label="flutter_chat_app"
+        android:label="FChat"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
