@@ -1,5 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/core/constant/color.dart';
+import 'package:flutter_chat_app/widget/user_avatar.dart';
 
 class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
   const ChatHeader({
@@ -14,28 +15,14 @@ class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      surfaceTintColor:
-          Colors.white, // disable change bg color when scrolling down
       backgroundColor: Colors.white,
+      elevation: 1,
       leadingWidth: 84,
       leading: SizedBox(
         child: Row(
           children: [
             const BackButton(),
-            CircleAvatar(
-              backgroundImage: profilePic != ''
-                  ? CachedNetworkImage(
-                      imageUrl: profilePic,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) =>
-                          const Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) =>
-                          const Center(child: Icon(Icons.error_outline)),
-                    ) as ImageProvider
-                  : const AssetImage('assets/images/no-profile.png'),
-              backgroundColor: Colors.grey,
-              radius: 18,
-            ),
+            UserAvatar(profilePic: profilePic, size: 'small'),
           ],
         ),
       ),
@@ -49,13 +36,17 @@ class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.call),
+          icon: Icon(
+            Icons.call,
+            color: kIconColor,
+          ),
         ),
         IconButton(
           onPressed: () {},
-          icon: const Icon(
+          icon: Icon(
             Icons.videocam_outlined,
             size: 27,
+            color: kIconColor,
           ),
         ),
       ],

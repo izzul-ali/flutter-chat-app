@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/features/user/data/user_provider.dart';
+import 'package:flutter_chat_app/widget/user_avatar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,20 +34,7 @@ class ContactList extends ConsumerWidget {
               },
               child: Column(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    radius: 30,
-                    backgroundImage: value[index].profilPic != ''
-                        ? CachedNetworkImage(
-                            imageUrl: value[index].profilPic,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator()),
-                            errorWidget: (context, url, error) =>
-                                const Center(child: Icon(Icons.error_outline)),
-                          ) as ImageProvider
-                        : const AssetImage('assets/images/no-profile.png'),
-                  ),
+                  UserAvatar(profilePic: value[index].profilPic, size: 'large'),
                   const SizedBox(height: 7),
                   Text(
                     value[index].username,

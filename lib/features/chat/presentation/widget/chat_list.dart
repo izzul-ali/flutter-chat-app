@@ -1,11 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/features/auth/data/auth_provider.dart';
 import 'package:flutter_chat_app/features/chat/data/chat_provider.dart';
 import 'package:flutter_chat_app/features/user/data/user_provider.dart';
 import 'package:flutter_chat_app/features/user/domain/user.dart';
+import 'package:flutter_chat_app/widget/user_avatar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../domain/chat_room.dart';
@@ -29,19 +30,32 @@ class ChatList extends ConsumerWidget {
         ),
         child: switch (chatRooms) {
           AsyncError(:final error) => Center(child: Text(error.toString())),
-          AsyncData(:final value) => ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              itemCount: value.length,
-              itemBuilder: (context, index) {
-                final ChatRoom chatroom = value[index];
-                final userId = chatroom.members
-                    .firstWhere((element) => element != currentUserId);
+          AsyncData(:final value) => value.isNotEmpty
+              ? ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  itemCount: value.length,
+                  itemBuilder: (context, index) {
+                    final ChatRoom chatroom = value[index];
+                    final userId = chatroom.members
+                        .firstWhere((element) => element != currentUserId);
 
-                return ChatListItem(
-                  userId: userId,
-                  chatroom: chatroom,
-                );
-              }),
+                    return ChatListItem(
+                      userId: userId,
+                      chatroom: chatroom,
+                    );
+                  })
+              : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text(
+                      'Start a convertation by click the users avatar in the contact list above',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
           _ => const Center(child: CircularProgressIndicator())
         },
       ),
@@ -61,7 +75,7 @@ class ChatListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final UserModel? receiver = ref.watch(getUserProvider(userId));
+    final UserModel? receiver = ref.watch(getUserByIdProvider(userId));
 
     if (receiver == null) {
       return const SizedBox.shrink();
@@ -77,19 +91,9 @@ class ChatListItem extends ConsumerWidget {
           },
         );
       },
-      leading: CircleAvatar(
-        backgroundColor: Colors.black,
-        radius: 25,
-        backgroundImage: receiver.profilPic != ''
-            ? CachedNetworkImage(
-                imageUrl: receiver.profilPic,
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) =>
-                    const Center(child: Icon(Icons.error_outline)),
-              ) as ImageProvider
-            : const AssetImage('assets/images/no-profile.png'),
+      leading: UserAvatar(
+        profilePic: receiver.profilPic,
+        size: 25.0,
       ),
       title: Text(receiver.username),
       titleTextStyle: const TextStyle(
@@ -104,31 +108,23 @@ class ChatListItem extends ConsumerWidget {
             )
           : Row(
               children: chatroom.type == 'image'
-                  ? [
-                      const Icon(Icons.image, size: 15, color: Colors.grey),
-                      const SizedBox(width: 3),
-                      const Text(
-                        'Photo',
-                        style: TextStyle(
-                          fontSize: 13,
-                        ),
-                      )
-                    ]
-                  : [
-                      const Icon(Icons.video_camera_back_rounded,
-                          size: 15, color: Colors.grey),
-                      const SizedBox(width: 3),
-                      const Text(
-                        'Video',
-                        style: TextStyle(
-                          fontSize: 13,
-                        ),
-                      )
-                    ],
+                  ? _buildMessageType(Icons.image, 'Photo')
+                  : chatroom.type == 'video'
+                      ? _buildMessageType(
+                          Icons.video_camera_back_rounded, 'Video')
+                      : _buildMessageType(Icons.file_present_rounded, 'File'),
             ),
       trailing: Text(
         timeago.format(chatroom.timestamp),
       ),
     );
+  }
+
+  List<Widget> _buildMessageType(IconData icon, String label) {
+    return [
+      Icon(icon, size: 15, color: Colors.grey),
+      const SizedBox(width: 3),
+      Text(label, style: const TextStyle(fontSize: 13))
+    ];
   }
 }

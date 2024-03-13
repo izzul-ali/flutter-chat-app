@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/features/auth/data/auth_provider.dart';
 import 'package:flutter_chat_app/features/chat/presentation/widget/chat_list.dart';
 import 'package:flutter_chat_app/features/chat/presentation/widget/contact_list.dart';
+import 'package:flutter_chat_app/features/user/data/user_provider.dart';
+import 'package:flutter_chat_app/widget/user_avatar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatsScreen extends StatelessWidget {
   const ChatsScreen({super.key});
@@ -27,7 +29,7 @@ class ChatsScreen extends StatelessWidget {
         ),
         child: const Column(
           children: [
-            SizedBox(height: 130),
+            SizedBox(height: 120),
             ContactList(),
             SizedBox(height: 30),
             ChatList(),
@@ -45,51 +47,34 @@ class ChatsHeader extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentUser = ref.watch(authRepositoryProvider).currentUser;
+    final currentUser = ref.watch(currentUserProvider);
 
     return AppBar(
       backgroundColor: Colors.transparent,
-      title: Text(
-        currentUser != null ? currentUser.displayName ?? "Chats" : 'Chats',
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+      title: switch (currentUser) {
+        AsyncData(:final value) => Text(
+            value != null ? value.username : 'FChat',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        AsyncError(:final error) => Text(error.toString()),
+        _ => const CircularProgressIndicator(),
+      },
       actions: [
         InkWell(
           onTap: () {
-            if (currentUser != null) {
-              showModalBottomSheet(
-                context: context,
-                showDragHandle: true,
-                isScrollControlled: true,
-                useSafeArea: true,
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.sizeOf(context).width,
-                  // minHeight: MediaQuery.sizeOf(context).height * 0.1,
-                  maxHeight: MediaQuery.sizeOf(context).height * 0.1,
-                ),
-                enableDrag: true,
-                builder: (context) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  alignment: Alignment.topLeft,
-                  child: Consumer(
-                    builder: (context, ref, child) => InkWell(
-                      onTap: () =>
-                          ref.read(authServiceProvider.notifier).logout(),
-                      child: const Text('Logout'),
-                    ),
-                  ),
-                ),
-              );
-            }
+            context.goNamed('Profile');
           },
-          child: const CircleAvatar(
-            backgroundColor: Color(0xff363a4c),
-            radius: 23,
-            backgroundImage: AssetImage('assets/images/no-profile.png'),
-          ),
+          child: switch (currentUser) {
+            AsyncData(:final value) => UserAvatar(
+                size: 'medium',
+                profilePic: value?.profilPic ?? '',
+              ),
+            AsyncError(:final error) => Text(error.toString()),
+            _ => const CircularProgressIndicator(),
+          },
         ),
         const SizedBox(width: 20)
       ],

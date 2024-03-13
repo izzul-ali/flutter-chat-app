@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/core/constant/color.dart';
 import 'package:flutter_chat_app/features/chat/presentation/widget/message/preview_media.dart';
 import 'package:video_player/video_player.dart';
 
@@ -84,7 +85,31 @@ class MessageItem extends StatelessWidget {
                               ),
                             ),
                           )
-                        : MessageTypeVideo(url: message.message),
+                        : message.type == 'image'
+                            ? MessageTypeVideo(url: message.message)
+                            : Container(
+                                width: MediaQuery.sizeOf(context).width * 0.5,
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ListTile(
+                                  leading: Icon(
+                                    Icons.download_outlined,
+                                    color: !isReceiver
+                                        ? kPrimaryChatColor
+                                        : Colors.white,
+                                  ),
+                                  title: Text(
+                                    'File',
+                                    style: TextStyle(
+                                      color: !isReceiver
+                                          ? kPrimaryChatColor
+                                          : Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
               ),
               const SizedBox(height: 2),
               Text(

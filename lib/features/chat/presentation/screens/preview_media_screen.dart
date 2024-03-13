@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/features/chat/data/chat_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../auth/data/auth_provider.dart';
@@ -25,28 +26,30 @@ class PreviewMediaScreen extends ConsumerStatefulWidget {
 }
 
 class _PreviewMediaScreenState extends ConsumerState<PreviewMediaScreen> {
-  late VideoPlayerController _playerController;
+  late VideoPlayerController? _playerController;
 
   Future<void> _init() async {
     _playerController = VideoPlayerController.file(
       widget.file,
     );
 
-    await _playerController.initialize();
+    await _playerController?.initialize();
 
     setState(() {});
   }
 
   @override
   void initState() {
-    _init();
+    if (widget.type == 'video') {
+      _init();
+    }
 
     super.initState();
   }
 
   @override
   void dispose() {
-    _playerController.dispose();
+    _playerController?.dispose();
 
     super.dispose();
   }
@@ -65,10 +68,26 @@ class _PreviewMediaScreenState extends ConsumerState<PreviewMediaScreen> {
                       widget.file,
                       fit: BoxFit.contain,
                     )
-                  : AspectRatio(
-                      aspectRatio: _playerController.value.aspectRatio,
-                      child: VideoPlayer(_playerController),
-                    ),
+                  : widget.type == 'video'
+                      ? AspectRatio(
+                          aspectRatio: _playerController!.value.aspectRatio,
+                          child: VideoPlayer(_playerController!),
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.file_present_sharp,
+                              size: 100,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              widget.file.uri.pathSegments.last,
+                              style: GoogleFonts.poppins(),
+                            ),
+                          ],
+                        ),
             ),
           ),
           const SizedBox(height: 10),

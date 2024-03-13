@@ -1,4 +1,4 @@
-import 'package:flutter_chat_app/core/utils/generate_chatroom_id.dart';
+import 'package:flutter_chat_app/core/helper/generate_chatroom_id.dart';
 
 void main() {
   final (chatrromId, members) = generateChatroomId(

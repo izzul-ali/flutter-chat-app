@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/core/constant/color.dart';
 import 'package:flutter_chat_app/features/auth/data/auth_provider.dart';
 import 'package:flutter_chat_app/features/chat/data/chat_provider.dart';
-import 'package:flutter_chat_app/features/chat/presentation/controller/upload_controller.dart';
-import 'package:flutter_chat_app/features/chat/presentation/screens/preview_media_screen.dart';
+import 'package:flutter_chat_app/features/chat/presentation/controller/send_media_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SendMessage extends ConsumerStatefulWidget {
   const SendMessage({
@@ -43,7 +44,7 @@ class _SendMessageState extends ConsumerState<SendMessage> {
         right: 5,
         top: 5,
       ),
-      decoration: BoxDecoration(color: Colors.grey[200]),
+      decoration: const BoxDecoration(color: Colors.white),
       child: Row(
         children: [
           Expanded(
@@ -57,110 +58,33 @@ class _SendMessageState extends ConsumerState<SendMessage> {
                 children: [
                   IconButton(
                     onPressed: () {},
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.mic_none_rounded,
                       size: 27,
+                      color: kIconColor,
                     ),
                   ),
-                  const SizedBox(width: 5),
                   Expanded(
                     child: TextField(
                       controller: _editingController,
                       decoration: const InputDecoration(
-                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                        ),
                         hintText: 'Message',
+                        filled: true,
+                        fillColor: Color(0xffF3F6F6),
                       ),
                     ),
                   ),
                   const SizedBox(width: 5),
-                  PopupMenuButton(
-                    offset: const Offset(0, -85),
-                    color: Colors.white,
-                    child: const Icon(
-                      Icons.camera_alt_outlined,
-                      size: 27,
-                    ),
-                    itemBuilder: (context) {
-                      return [
-                        PopupMenuItem(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                onPressed: () async {
-                                  Navigator.pop(context);
-
-                                  final media = await UploadController
-                                      .handlePickImageOrVideo('image');
-
-                                  if (context.mounted && media != null) {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) => PreviewMediaScreen(
-                                        type: 'image',
-                                        file: media,
-                                        receiverId: widget.receiverId,
-                                        chatRoomId: widget.chatRoomId ?? '',
-                                      ),
-                                    ));
-
-                                    // cause error because parent need a extra data
-                                    // context
-                                    //     .goNamed('Preview', pathParameters: {
-                                    //   'path': base64Encode(path),
-                                    //   "receiverId": widget.receiverId,
-                                    //   'chatRoomId': widget.chatRoomId ?? '',
-                                    // });
-                                  }
-                                },
-                                icon: const Icon(Icons.image, size: 30),
-                              ),
-                              IconButton(
-                                onPressed: () async {
-                                  Navigator.pop(context);
-
-                                  final media = await UploadController
-                                      .handlePickImageOrVideo('video');
-
-                                  if (context.mounted && media != null) {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) => PreviewMediaScreen(
-                                        type: 'video',
-                                        file: media,
-                                        receiverId: widget.receiverId,
-                                        chatRoomId: widget.chatRoomId ?? '',
-                                      ),
-                                    ));
-
-                                    // cause error because parent need a extra data
-                                    // context
-                                    //     .goNamed('Preview', pathParameters: {
-                                    //   'path': base64Encode(path),
-                                    //   "receiverId": widget.receiverId,
-                                    //   'chatRoomId': widget.chatRoomId ?? '',
-                                    // });
-                                  }
-                                },
-                                icon: const Icon(
-                                  Icons.video_camera_back_sharp,
-                                  size: 30,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ];
-                    },
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.attach_file),
-                  ),
+                  _buildMediaFromCamera(),
+                  _buildAttachment(),
                 ],
               ),
             ),
@@ -197,6 +121,144 @@ class _SendMessageState extends ConsumerState<SendMessage> {
           ),
         ],
       ),
+    );
+  }
+
+  PopupMenuButton<dynamic> _buildMediaFromCamera() {
+    return PopupMenuButton(
+      offset: const Offset(0, -120),
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: Icon(
+          Icons.camera_alt_outlined,
+          size: 27,
+          color: kIconColor,
+        ),
+      ),
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _chooseItem(
+                  onTap: () async {
+                    await ref
+                        .read(sendMediaControllerProvider.notifier)
+                        .sendMedia(
+                          context,
+                          type: 'image',
+                          source: ImageSource.camera,
+                          receiverId: widget.receiverId,
+                          chatRoomId: widget.chatRoomId ?? '',
+                        );
+                  },
+                  label: 'Image',
+                  icon: const Icon(Icons.image),
+                ),
+                _chooseItem(
+                  onTap: () async {
+                    await ref
+                        .read(sendMediaControllerProvider.notifier)
+                        .sendMedia(
+                          context,
+                          type: 'video',
+                          source: ImageSource.camera,
+                          receiverId: widget.receiverId,
+                          chatRoomId: widget.chatRoomId ?? '',
+                        );
+                  },
+                  label: 'Video',
+                  icon: const Icon(Icons.videocam_rounded),
+                ),
+              ],
+            ),
+          )
+        ];
+      },
+    );
+  }
+
+  PopupMenuButton<dynamic> _buildAttachment() {
+    return PopupMenuButton(
+      offset: const Offset(0, -120),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        child: Icon(Icons.attach_file),
+      ),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _chooseItem(
+                onTap: () async {
+                  await ref
+                      .read(sendMediaControllerProvider.notifier)
+                      .sendMedia(
+                        context,
+                        type: 'file',
+                        receiverId: widget.receiverId,
+                        chatRoomId: widget.chatRoomId ?? '',
+                      );
+                },
+                label: 'Docs',
+                icon: const Icon(Icons.edit_document),
+              ),
+              const SizedBox(width: 7),
+              _chooseItem(
+                onTap: () async {
+                  await ref
+                      .read(sendMediaControllerProvider.notifier)
+                      .sendMedia(
+                        context,
+                        type: 'image',
+                        receiverId: widget.receiverId,
+                        chatRoomId: widget.chatRoomId ?? '',
+                      );
+                },
+                label: 'Image',
+                icon: const Icon(Icons.image),
+              ),
+              const SizedBox(width: 7),
+              _chooseItem(
+                onTap: () async {
+                  await ref
+                      .read(sendMediaControllerProvider.notifier)
+                      .sendMedia(
+                        context,
+                        type: 'video',
+                        receiverId: widget.receiverId,
+                        chatRoomId: widget.chatRoomId ?? '',
+                      );
+                },
+                label: 'Video',
+                icon: const Icon(Icons.videocam_rounded),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _chooseItem({
+    required Function() onTap,
+    required String label,
+    required Icon icon,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        IconButton.filled(
+          onPressed: onTap,
+          icon: icon,
+        ),
+        Text(label)
+      ],
     );
   }
 }

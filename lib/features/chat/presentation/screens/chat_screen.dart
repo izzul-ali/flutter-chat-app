@@ -22,27 +22,29 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: ChatHeader(
         profilePic: receiver.profilPic,
         username: receiver.username,
       ),
-      body: Expanded(
-        child: Container(
-          padding: const EdgeInsets.only(
-            top: 10,
-            left: 10,
-            right: 10,
-            bottom: 70,
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.only(
+                top: 10,
+                left: 10,
+                right: 10,
+                bottom: 70,
+              ),
+              child: MessageList(
+                chatRoomId: chatRoomId,
+                senderId: senderId,
+                receiverId: receiver.uid,
+              ),
+            ),
           ),
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-          ),
-          child: MessageList(
-            chatRoomId: chatRoomId,
-            senderId: senderId,
-            receiverId: receiver.uid,
-          ),
-        ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: SendMessage(

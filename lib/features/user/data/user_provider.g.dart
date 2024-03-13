@@ -6,7 +6,7 @@ part of 'user_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getUserHash() => r'1977964ab806ed4df6337917cc938954da2b0fa1';
+String _$getUserByIdHash() => r'2c8d086d16672eb4860752c56f944422ee8bc755';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,27 +29,27 @@ class _SystemHash {
   }
 }
 
-/// See also [getUser].
-@ProviderFor(getUser)
-const getUserProvider = GetUserFamily();
+/// See also [getUserById].
+@ProviderFor(getUserById)
+const getUserByIdProvider = GetUserByIdFamily();
 
-/// See also [getUser].
-class GetUserFamily extends Family<UserModel?> {
-  /// See also [getUser].
-  const GetUserFamily();
+/// See also [getUserById].
+class GetUserByIdFamily extends Family<UserModel?> {
+  /// See also [getUserById].
+  const GetUserByIdFamily();
 
-  /// See also [getUser].
-  GetUserProvider call(
+  /// See also [getUserById].
+  GetUserByIdProvider call(
     String userId,
   ) {
-    return GetUserProvider(
+    return GetUserByIdProvider(
       userId,
     );
   }
 
   @override
-  GetUserProvider getProviderOverride(
-    covariant GetUserProvider provider,
+  GetUserByIdProvider getProviderOverride(
+    covariant GetUserByIdProvider provider,
   ) {
     return call(
       provider.userId,
@@ -68,31 +68,32 @@ class GetUserFamily extends Family<UserModel?> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'getUserProvider';
+  String? get name => r'getUserByIdProvider';
 }
 
-/// See also [getUser].
-class GetUserProvider extends AutoDisposeProvider<UserModel?> {
-  /// See also [getUser].
-  GetUserProvider(
+/// See also [getUserById].
+class GetUserByIdProvider extends AutoDisposeProvider<UserModel?> {
+  /// See also [getUserById].
+  GetUserByIdProvider(
     String userId,
   ) : this._internal(
-          (ref) => getUser(
-            ref as GetUserRef,
+          (ref) => getUserById(
+            ref as GetUserByIdRef,
             userId,
           ),
-          from: getUserProvider,
-          name: r'getUserProvider',
+          from: getUserByIdProvider,
+          name: r'getUserByIdProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$getUserHash,
-          dependencies: GetUserFamily._dependencies,
-          allTransitiveDependencies: GetUserFamily._allTransitiveDependencies,
+                  : _$getUserByIdHash,
+          dependencies: GetUserByIdFamily._dependencies,
+          allTransitiveDependencies:
+              GetUserByIdFamily._allTransitiveDependencies,
           userId: userId,
         );
 
-  GetUserProvider._internal(
+  GetUserByIdProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -106,12 +107,12 @@ class GetUserProvider extends AutoDisposeProvider<UserModel?> {
 
   @override
   Override overrideWith(
-    UserModel? Function(GetUserRef provider) create,
+    UserModel? Function(GetUserByIdRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: GetUserProvider._internal(
-        (ref) => create(ref as GetUserRef),
+      override: GetUserByIdProvider._internal(
+        (ref) => create(ref as GetUserByIdRef),
         from: from,
         name: null,
         dependencies: null,
@@ -124,12 +125,12 @@ class GetUserProvider extends AutoDisposeProvider<UserModel?> {
 
   @override
   AutoDisposeProviderElement<UserModel?> createElement() {
-    return _GetUserProviderElement(this);
+    return _GetUserByIdProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GetUserProvider && other.userId == userId;
+    return other is GetUserByIdProvider && other.userId == userId;
   }
 
   @override
@@ -141,20 +142,34 @@ class GetUserProvider extends AutoDisposeProvider<UserModel?> {
   }
 }
 
-mixin GetUserRef on AutoDisposeProviderRef<UserModel?> {
+mixin GetUserByIdRef on AutoDisposeProviderRef<UserModel?> {
   /// The parameter `userId` of this provider.
   String get userId;
 }
 
-class _GetUserProviderElement extends AutoDisposeProviderElement<UserModel?>
-    with GetUserRef {
-  _GetUserProviderElement(super.provider);
+class _GetUserByIdProviderElement extends AutoDisposeProviderElement<UserModel?>
+    with GetUserByIdRef {
+  _GetUserByIdProviderElement(super.provider);
 
   @override
-  String get userId => (origin as GetUserProvider).userId;
+  String get userId => (origin as GetUserByIdProvider).userId;
 }
 
-String _$userServiceHash() => r'92d9e0808005650e2ca8a1f1e2ed6b80eca2c241';
+String _$currentUserHash() => r'492ee0b23f88e06e2ffb1e9a2d1ff2fb118bf12e';
+
+/// See also [currentUser].
+@ProviderFor(currentUser)
+final currentUserProvider = FutureProvider<UserModel?>.internal(
+  currentUser,
+  name: r'currentUserProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$currentUserHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef CurrentUserRef = FutureProviderRef<UserModel?>;
+String _$userServiceHash() => r'9aacb342a37424b1befb7bb604eb2edc34db54f1';
 
 /// See also [UserService].
 @ProviderFor(UserService)

@@ -4,6 +4,7 @@ import 'package:flutter_chat_app/features/auth/data/auth_provider.dart';
 import 'package:flutter_chat_app/features/auth/data/auth_repository.dart';
 import 'package:flutter_chat_app/features/chat/presentation/screens/chat_screen.dart';
 import 'package:flutter_chat_app/features/user/domain/user.dart';
+import 'package:flutter_chat_app/features/user/presentation/profile_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -63,6 +64,11 @@ GoRouter goRouter(GoRouterRef ref) {
         name: 'Chats',
         builder: (context, state) => const ChatsScreen(),
         routes: [
+          GoRoute(
+            path: 'profile',
+            name: 'Profile',
+            builder: (context, state) => const ProfileScreen(),
+          ),
           GoRoute(
             path: 'detail',
             name: 'Detail',

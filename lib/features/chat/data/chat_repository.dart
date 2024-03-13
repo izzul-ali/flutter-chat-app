@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_chat_app/core/utils/generate_chatroom_id.dart';
+import 'package:flutter_chat_app/core/helper/generate_chatroom_id.dart';
 import 'package:flutter_chat_app/features/chat/domain/chat_room.dart';
 import 'package:flutter_chat_app/features/chat/domain/message.dart';
 

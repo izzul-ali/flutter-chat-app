@@ -35,7 +35,7 @@ final chatRoomsProvider = AutoDisposeStreamProvider<List<ChatRoom>>.internal(
 );
 
 typedef ChatRoomsRef = AutoDisposeStreamProviderRef<List<ChatRoom>>;
-String _$messagesListHash() => r'd40da97f5adba96772af441d37f1e7e8f4c2fe15';
+String _$messagesListHash() => r'f7ae6b48d34e28e0328d683d30ce86bdbe2ffd5a';
 
 /// Copied from Dart SDK
 class _SystemHash {

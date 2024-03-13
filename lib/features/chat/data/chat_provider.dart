@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_chat_app/core/utils/generate_chatroom_id.dart';
+import 'package:flutter_chat_app/core/helper/generate_chatroom_id.dart';
 import 'package:flutter_chat_app/features/auth/data/auth_provider.dart';
 import 'package:flutter_chat_app/features/chat/data/chat_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

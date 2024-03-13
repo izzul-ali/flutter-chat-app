@@ -24,11 +24,14 @@ class AuthService extends _$AuthService {
           await ref.read(authRepositoryProvider).signInUser(credential);
 
       if (user?.user != null) {
-        await ref
+        final UserModel? currentUser = await ref
             .read(userServiceProvider.notifier)
             .getCurrentUser(user!.user!.uid);
 
-        return;
+        if (currentUser != null) {
+          ref.invalidate(currentUserProvider);
+          return;
+        }
       }
 
       await ref.read(authRepositoryProvider).logout();
@@ -55,6 +58,7 @@ class AuthService extends _$AuthService {
       );
 
       await ref.read(userServiceProvider.notifier).addUser(user);
+      ref.invalidate(currentUserProvider);
     } catch (e) {
       rethrow;
     }
@@ -63,6 +67,7 @@ class AuthService extends _$AuthService {
   Future<void> logout() async {
     try {
       await ref.read(authRepositoryProvider).logout();
+      ref.invalidate(currentUserProvider);
     } catch (e) {
       rethrow;
     }

@@ -33,7 +33,7 @@ class AuthRepository {
         password: credential.password,
       );
 
-      auth.user?.updateDisplayName(credential.username);
+      await auth.user?.updateDisplayName(credential.username);
 
       return auth;
     } catch (error) {
