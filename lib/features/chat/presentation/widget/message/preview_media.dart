@@ -14,21 +14,25 @@ class PreviewMedia extends StatefulWidget {
 }
 
 class _PreviewMediaState extends State<PreviewMedia> {
-  late FlickManager _flickManager;
+  late FlickManager? _flickManager;
 
   @override
   void initState() {
-    _flickManager = FlickManager(
-      videoPlayerController:
-          VideoPlayerController.networkUrl(Uri.parse(widget.url)),
-    );
+    if (widget.type == 'video') {
+      _flickManager = FlickManager(
+        autoPlay: true,
+        autoInitialize: true,
+        videoPlayerController:
+            VideoPlayerController.networkUrl(Uri.parse(widget.url)),
+      );
+    }
 
     super.initState();
   }
 
   @override
   void dispose() {
-    _flickManager.dispose();
+    _flickManager?.dispose();
 
     super.dispose();
   }
@@ -60,7 +64,7 @@ class _PreviewMediaState extends State<PreviewMedia> {
               )
             : Hero(
                 tag: 'preview-video',
-                child: FlickVideoPlayer(flickManager: _flickManager),
+                child: FlickVideoPlayer(flickManager: _flickManager!),
               ),
       ),
     );

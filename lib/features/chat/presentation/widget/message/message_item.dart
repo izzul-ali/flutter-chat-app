@@ -85,7 +85,7 @@ class MessageItem extends StatelessWidget {
                               ),
                             ),
                           )
-                        : message.type == 'image'
+                        : message.type == 'video'
                             ? MessageTypeVideo(url: message.message)
                             : Container(
                                 width: MediaQuery.sizeOf(context).width * 0.5,
