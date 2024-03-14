@@ -1,16 +1,20 @@
-# flutter_chat_app
+# FChat
 
-A new Flutter project.
+Chat application created using Flutter, Riverpod, and Firebase
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- [x] Authentication
+- [x] Update photo profile
+- [x] Send and receive messages directly
+- [x] send text messages, pictures and videos
+- [x] Preview image and video messages
+- [ ] send a voice message
 
-A few resources to get you started if this is your first Flutter project:
+## Preview
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![Preview](https://github.com/izzul-ali/flutter-chat-app/assets/110296589/f11d3803-08f7-442a-abb6-195efdad22ad)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Design
+
+[Figma](https://www.figma.com/file/DfTldFPURWyGKmlBsHnZQN/FChat?type=design&node-id=0%3A1&mode=design&t=fOFcO5JOpNUpqBvb-1)
