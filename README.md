@@ -9,7 +9,8 @@ Chat application created using Flutter, Riverpod, and Firebase
 - [x] Send and receive messages directly
 - [x] send text messages, pictures and videos
 - [x] Preview image and video messages
-- [ ] send a voice message
+- [ ] Send a voice message
+- [ ] Dark mode
 
 ## Preview
 
